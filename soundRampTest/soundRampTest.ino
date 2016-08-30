@@ -13,8 +13,8 @@
 // The "quiet" volume
 #define HALFVOL			55
 
-// The "nothing" volume. 
-/* You shouldn't be able to hear this too well, 
+// The "nothing" volume.
+/* You shouldn't be able to hear this too well,
  * and I didn't place it too low (ie 255) because you should be able
  * to hear the full ramp.*/
 #define LOWVOL			180
@@ -22,7 +22,9 @@
 // The length of time (milliseconds) that a ramp lasts
 #define PERIOD			2000
 
-// The length of time (milliseconds) before ramping down to half volume
+// The length of time (milliseconds) before ramping down to half volume. This value
+// is two seconds longer than it actually plays for, since it adds in the initial ramp
+// up. Since it's set at 8000ms, it would play for 6000ms.
 #define SWITCH			8000
 
 const char *trackName = "track001.mp3";
@@ -36,7 +38,7 @@ int timeOffset = 0;
 unsigned long totalTime = 30 * SECONDS;
 
 
-Adafruit_VS1053_FilePlayer player = 
+Adafruit_VS1053_FilePlayer player =
 	Adafruit_VS1053_FilePlayer
 	(
 		RESET_PIN,
@@ -71,8 +73,8 @@ void setup() {
 
 void loop() {
 	unsigned long milliSec = millis();
-	
-	
+
+
 	// Play
 	if (player.stopped()) {
 		player.startPlayingFile(trackName);
@@ -91,28 +93,28 @@ void loop() {
 	delay(200);
 }
 
-// Get used to these nested ifs. I can't do squat about it right now, 
-// and I hate myself for doing it like this. It could be cleaner, but it 
+// Get used to these nested ifs. I can't do squat about it right now,
+// and I hate myself for doing it like this. It could be cleaner, but it
 // just needs to work.
 // b_DayTime should be set to true if it's between 8AM and 8PM
 // deltaTime should be the time passed since the music began playing
 uint8_t getVolume(bool b_DayTime, unsigned long deltaTime, unsigned long wholeTime){
-	
+
 	if (deltaTime > wholeTime) { return LOWVOL; }
 	// This means it is nightTime, play softly
-	if (!b_DayTime) 
-	{ 
+	if (!b_DayTime)
+	{
 		// Too short
-		if (wholeTime < (4 * SECONDS)) 
+		if (wholeTime < (4 * SECONDS))
 		{
 			int halfTime = wholeTime / 2;
-			
+
 			if (deltaTime < halfTime) {
 				return (uint8_t)map(deltaTime, 0, halfTime, LOWVOL, HALFVOL);
 			} else {
 				return (uint8_t)map(deltaTime, halfTime, wholeTime, HALFVOL, LOWVOL);
 			}
-		} else 
+		} else
 		{
 			if (deltaTime < PERIOD) {
 				return (uint8_t)map(deltaTime, 0, PERIOD, LOWVOL, HALFVOL);
@@ -126,10 +128,10 @@ uint8_t getVolume(bool b_DayTime, unsigned long deltaTime, unsigned long wholeTi
 
 	// It's not Day time, play loudly depending on the timescale
 	// Ellapsed time is too short for full envelope
-	if (wholeTime < (4 * SECONDS)) 
+	if (wholeTime < (4 * SECONDS))
 	{
 		int halfTime = wholeTime / 2;
-		
+
 		if (deltaTime < halfTime) {
 			return (uint8_t)map(deltaTime, 0, halfTime, LOWVOL, HIGHVOL);
 		} else {
@@ -159,18 +161,3 @@ uint8_t getVolume(bool b_DayTime, unsigned long deltaTime, unsigned long wholeTi
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
