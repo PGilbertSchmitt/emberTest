@@ -1,17 +1,27 @@
 #include <Adafruit_VS1053.h>
 
-void setup() {
-  Serial.begin(9600);
-  while(!Serial){}
+int i;
+int lowestReading;
 
-  Serial.print("This program will spit out a reading every\n");
-  Serial.print("half a second. Write down the readings you\n");
-  Serial.print("like, and I can use those later.\n");
+void setup() {
+	Serial.begin(9600);
+	while(!Serial){}
+	
+	lowestReading = 400;
+	i = 1;
 }
 
 void loop() {
-  Serial.print("Current reading: ");
-  Serial.print(analogRead(0));
-  Serial.println("\n");
-  delay(500);
+	int reading = analogRead(0);
+	if (reading < lowestReading) {
+		lowestReading = reading;
+	}
+	
+	Serial.print(i++);
+	Serial.print(" - Current reading: ");
+	Serial.print(reading);
+	Serial.print("\nLowest Reading: ");
+	Serial.println(lowestReading);
+	
+	delay(700);
 }

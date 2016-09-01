@@ -11,7 +11,7 @@
 #define HIGHVOL 		20
 
 // The "quiet" volume
-#define HALFVOL			55
+#define HALFVOL			45
 
 // The "nothing" volume.
 /* You shouldn't be able to hear this too well,
@@ -25,7 +25,7 @@
 // The length of time (milliseconds) before ramping down to half volume. This value
 // is two seconds longer than it actually plays for, since it adds in the initial ramp
 // up. Since it's set at 8000ms, it would play for 6000ms.
-#define SWITCH			8000
+#define SWITCH			6000
 
 const char *trackName = "track001.mp3";
 int lastSec = 0;
